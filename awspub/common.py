@@ -1,4 +1,5 @@
 import logging
+import os
 from typing import List, Tuple
 
 import boto3
@@ -72,4 +73,16 @@ def _get_regions(region_to_query: str, regions_allowlist: List[str]) -> List[str
 
 
 def _get_client(service, **kwargs):
+    """
+    Get a boto3 client for the given service with provided arguments
+
+    if AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY environment variables are set,
+    those will be used to create the client
+    """
+
+    aws_access_key_id = os.getenv("AWS_ACCESS_KEY_ID")
+    aws_secret_access_key = os.getenv("AWS_SECRET_ACCESS_KEY")
+    if aws_access_key_id and aws_secret_access_key:
+        kwargs["aws_access_key_id"] = aws_access_key_id
+        kwargs["aws_secret_access_key"] = aws_secret_access_key
     return boto3.client(service, **kwargs)

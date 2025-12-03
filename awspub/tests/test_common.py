@@ -73,3 +73,27 @@ def test_get_client_with_args(service, args, expected_region):
         client_mock.assert_called_once_with(service, **args)
         _, called_kwargs = client_mock.call_args
         assert called_kwargs["region_name"] == expected_region
+
+
+def test_get_client_without_args():
+
+    with patch("boto3.client") as client_mock:
+        _get_client("s3")
+
+        client_mock.assert_called_once_with(
+            "s3",
+        )
+
+
+def test_get_client_with_credentials_in_env(monkeypatch):
+    monkeypatch.setenv("AWS_ACCESS_KEY_ID", "test_access_key")
+    monkeypatch.setenv("AWS_SECRET_ACCESS_KEY", "test_secret_key")
+
+    with patch("boto3.client") as client_mock:
+        _get_client("s3")
+
+        client_mock.assert_called_once_with(
+            "s3",
+            aws_access_key_id="test_access_key",
+            aws_secret_access_key="test_secret_key",
+        )
