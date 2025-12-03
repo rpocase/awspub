@@ -97,3 +97,15 @@ def test_get_client_with_credentials_in_env(monkeypatch):
             aws_access_key_id="test_access_key",
             aws_secret_access_key="test_secret_key",
         )
+
+
+def test_get_client_with_region_in_env(monkeypatch):
+    monkeypatch.setenv("AWS_REGION", "us-west-2")
+
+    with patch("boto3.client") as client_mock:
+        _get_client("s3")
+
+        client_mock.assert_called_once_with(
+            "s3",
+            region_name="us-west-2",
+        )
