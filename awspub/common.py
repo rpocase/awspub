@@ -80,16 +80,4 @@ def _get_client(service, **kwargs):
     those will be used to create the client
     """
 
-    aws_access_key_id = os.getenv("AWS_ACCESS_KEY_ID")
-    aws_secret_access_key = os.getenv("AWS_SECRET_ACCESS_KEY")
-    aws_region = os.getenv("AWS_REGION")
-    if aws_access_key_id and aws_secret_access_key:
-        kwargs["aws_access_key_id"] = aws_access_key_id
-        kwargs["aws_secret_access_key"] = aws_secret_access_key
-    # interacting with partitions outside of commercial need
-    # to explicitly set the region_name
-    # avoid overriding region_name if already provided to ensure
-    # marketplace API calls work correctly
-    if aws_region and "region_name" not in kwargs:
-        kwargs["region_name"] = aws_region
     return boto3.client(service, **kwargs)
